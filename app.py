@@ -86,7 +86,7 @@ def infer(
                 print("<stopped>\n")
                 break
 
-    print(f"{generated_text}")
+    #print(f"{generated_text}")
     
     for stop_word in stop:
         stop_word = codecs.getdecoder("unicode_escape")(stop_word)[0]
