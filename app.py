@@ -109,6 +109,10 @@ def chat(
     global model
     history = history or []
 
+    if len(history) == 0:
+        # no history, so lets reset chat state
+        model.resetState()
+        
     if model == None:
         gc.collect()
         if (DEVICE == "cuda"):
@@ -213,7 +217,7 @@ chatiface = gr.Interface(
         gr.Slider(1, 384, value=20),  # max_tokens
         gr.Slider(0.0, 1.0, value=0.2),  # temperature
         gr.Slider(0.0, 1.0, value=0.9),  # top_p
-        gr.Textbox(lines=1, value="<|endoftext|>,\\n") # stop
+        gr.Textbox(lines=1, value="<|endoftext|>") # stop
     ],
     outputs=[gr.Chatbot(color_map=("green", "pink")),"state"],
 ).queue()
