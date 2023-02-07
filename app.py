@@ -108,16 +108,16 @@ def chat(
 ):
     global model
     history = history or []
-
-    if len(history) == 0:
-        # no history, so lets reset chat state
-        model.resetState()
         
     if model == None:
         gc.collect()
         if (DEVICE == "cuda"):
             torch.cuda.empty_cache()
         model = get_model()
+        
+    if len(history) == 0:
+        # no history, so lets reset chat state
+        model.resetState()
         
     max_new_tokens = int(max_new_tokens)
     temperature = float(temperature)
