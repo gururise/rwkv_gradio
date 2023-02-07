@@ -217,13 +217,14 @@ chatiface = gr.Interface(
         gr.Textbox(lines=1, value="<|endoftext|>,\\n") # stop
     ],
     outputs=[gr.Chatbot(color_map=("green", "pink")),"state"],
-)
+).queue()
 
 demo = gr.TabbedInterface(
 
     [iface,chatiface],["Generative","Chatbot"],
     title="RWKV-4 (1.5b Instruct)",
     
-    ).queue()
+    )
 
+demo.queue()
 demo.launch(share=False)
