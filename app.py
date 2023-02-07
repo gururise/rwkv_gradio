@@ -134,7 +134,7 @@ def chat(
     if prompt == "":
         prompt = " "
     
-    print(f"PROMPT ({datetime.now()}):\n-------\n{prompt}")
+    print(f"CHAT ({datetime.now()}):\n-------\n{prompt}")
     print(f"OUTPUT ({datetime.now()}):\n-------\n")
     # Load prompt
     model.loadContext(newctx=prompt)
@@ -184,21 +184,24 @@ Q. Give me a list of vegetables.
 Q. Give me a list of car manufacturers.''', "generative", 80, 0.2, 1.0, "\\n\\n,<|endoftext|>"],
     [
         # Natural Language Interface
-        '''You are the writing assistant for Stephen King. You have worked in the fiction/horror genre for 30 years. You are a Pulitzer Prize-winning author, and now you are tasked with developing a skeletal outline for his newest novel, set to be completed in the spring of 2024. Create a title and brief description for the first 5 chapters of this work.\n\nTitle:''',"generative", 250, 0.85, 0.85, "<|endoftext|>"]
+        '''You are the writing assistant for Stephen King. You have worked in the fiction/horror genre for 30 years. You are a Pulitzer Prize-winning author, and now you are tasked with developing a skeletal outline for his newest horror novel, set to be completed in the spring of 2024. Create a summary of this work.
+
+Summary:''',"generative", 200, 0.85, 0.8, "<|endoftext|>"]
 ]
 
 
 iface = gr.Interface(
     fn=infer,
-    description='''<p><a href='https://github.com/BlinkDL/RWKV-LM'>RWKV Language Model</a> - RNN With Transformer-level LLM Performance</p>
-    <p>Big thank you to <a href='https://www.rftcapital.com'>RFT Capital</a> for providing compute capability for our experiments.</p>''',
+    description='''<p><a href='https://github.com/BlinkDL/RWKV-LM'>RWKV Language Model</a> - RNN With Transformer-level LLM Performance.
+    According to the author: "It combines the best of RNN and transformers - great performance, fast inference, saves VRAM, fast training, "infinite" ctx_len, and free sentence embedding"
+    <p>Thanks to <a href='https://www.rftcapital.com'>RFT Capital</a> for donating compute capability for our experiments. Additional thanks to the author of the <a href="https://github.com/harrisonvanderbyl/rwkvstic">rwkvstic</a> library.</p>''',
     allow_flagging="never",
     inputs=[
         gr.Textbox(lines=20, label="Prompt"),  # prompt
         gr.Radio(["generative","Q/A"], value="generative", label="Choose Mode"),
-        gr.Slider(1, 384, value=20),  # max_tokens
-        gr.Slider(0.0, 1.0, value=0.2),  # temperature
-        gr.Slider(0.0, 1.0, value=0.9),  # top_p
+        gr.Slider(1, 256, value=40),  # max_tokens
+        gr.Slider(0.0, 1.0, value=0.8),  # temperature
+        gr.Slider(0.0, 1.0, value=0.85),  # top_p
         gr.Textbox(lines=1, value="<|endoftext|>") # stop
     ],
     outputs=gr.Textbox(lines=25),
@@ -208,15 +211,16 @@ iface = gr.Interface(
 
 chatiface = gr.Interface(
     fn=chat,
-    description='''<p><a href='https://github.com/BlinkDL/RWKV-LM'>RWKV Language Model</a> - RNN With Transformer-level LLM Performance</p>
-    <p>Big thank you to <a href='https://www.rftcapital.com'>RFT Capital</a> for providing compute capability for our experiments.</p>''',
+    description='''<p><a href='https://github.com/BlinkDL/RWKV-LM'>RWKV Language Model</a> - RNN With Transformer-level LLM Performance.
+    According to the author: "It combines the best of RNN and transformers - great performance, fast inference, saves VRAM, fast training, "infinite" ctx_len, and free sentence embedding"
+    <p>Thanks to <a href='https://www.rftcapital.com'>RFT Capital</a> for donating compute capability for our experiments. Additional thanks to the author of the <a href="https://github.com/harrisonvanderbyl/rwkvstic">rwkvstic</a> library.</p>''',
     allow_flagging="never",
     inputs=[
         gr.Textbox(lines=5, label="Message"),  # prompt
         "state",
-        gr.Slider(1, 384, value=20),  # max_tokens
-        gr.Slider(0.0, 1.0, value=0.2),  # temperature
-        gr.Slider(0.0, 1.0, value=0.9),  # top_p
+        gr.Slider(1, 256, value=60),  # max_tokens
+        gr.Slider(0.0, 1.0, value=0.8),  # temperature
+        gr.Slider(0.0, 1.0, value=0.85),  # top_p
         gr.Textbox(lines=1, value="<|endoftext|>") # stop
     ],
     outputs=[gr.Chatbot(color_map=("green", "pink")),"state"],
