@@ -192,7 +192,7 @@ Summary:''',"generative", 200, 0.85, 0.8, "<|endoftext|>"]
 
 iface = gr.Interface(
     fn=infer,
-    description='''<p><a href='https://github.com/BlinkDL/RWKV-LM'>RWKV Language Model</a> - RNN With Transformer-level LLM Performance.
+    description='''<p>RNN With Transformer-level LLM Performance. (<a href='https://github.com/BlinkDL/RWKV-LM'>github</a>)
     According to the author: "It combines the best of RNN and transformers - great performance, fast inference, saves VRAM, fast training, "infinite" ctx_len, and free sentence embedding"
     <p>Thanks to <a href='https://www.rftcapital.com'>RFT Capital</a> for donating compute capability for our experiments. Additional thanks to the author of the <a href="https://github.com/harrisonvanderbyl/rwkvstic">rwkvstic</a> library.</p>''',
     allow_flagging="never",
@@ -211,7 +211,7 @@ iface = gr.Interface(
 
 chatiface = gr.Interface(
     fn=chat,
-    description='''<p><a href='https://github.com/BlinkDL/RWKV-LM'>RWKV Language Model</a> - RNN With Transformer-level LLM Performance.
+    description='''<p>RNN With Transformer-level LLM Performance. (<a href='https://github.com/BlinkDL/RWKV-LM'>github</a>)
     According to the author: "It combines the best of RNN and transformers - great performance, fast inference, saves VRAM, fast training, "infinite" ctx_len, and free sentence embedding"
     <p>Thanks to <a href='https://www.rftcapital.com'>RFT Capital</a> for donating compute capability for our experiments. Additional thanks to the author of the <a href="https://github.com/harrisonvanderbyl/rwkvstic">rwkvstic</a> library.</p>''',
     allow_flagging="never",
