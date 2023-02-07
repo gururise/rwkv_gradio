@@ -201,6 +201,7 @@ iface = gr.Interface(
     ],
     outputs=gr.Textbox(lines=25),
     examples=examples,
+    cache_examples=False,
 ).queue()
 
 chatiface = gr.Interface(
