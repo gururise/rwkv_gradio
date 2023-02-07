@@ -58,11 +58,9 @@ def infer(
     if prompt == "":
         prompt = " "
 
-    if (mode == "generative"):
-        # Clear model state for generative mode
-        model.resetState()
-    else: # Q/A
-        model.resetState()
+    # Clear model state for generative mode
+    model.resetState()
+    if (mode == "Q/A"):
         prompt = f"Expert Questions & Helpful Answers\nAsk Research Experts\nQuestion:\n{prompt}\n\nFull Answer:"
     
     print(f"PROMPT ({datetime.now()}):\n-------\n{prompt}")
