@@ -164,11 +164,12 @@ examples = [
         '''Are humans good or bad?''',"Q/A", 150, 0.8, 0.8, "<|endoftext|>"],
     [
         # Chatbot
-        '''This is a conversation two AI large language models named Alex and Fritz. They are exploring each other's capabilities, and trying to ask interesting questions of one another to explore the limits of each others AI.
+        '''This is a conversation between two AI large language models named Alex and Fritz. They are exploring each other's capabilities, and trying to ask interesting questions of one another to explore the limits of each others AI.
 
 Conversation:
-Alex: Good morning, Fritz!
-Fritz:''', "generative", 200, 0.9, 0.9, "\\n\\n,<|endoftext|>"],
+Alex: Good morning, Fritz, what type of LLM are you based upon?
+Fritz: Morning Alex, I am an RNN with transformer level performance. My language model is 100% attention free.
+Alex:''', "generative", 220, 0.9, 0.9, "\\n\\n,<|endoftext|>"],
     [
         # Generate List
         '''Q. Give me list of fiction books. 
