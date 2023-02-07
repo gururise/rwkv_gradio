@@ -1,3 +1,11 @@
+"""
+RWKV RNN Model - Gradio Space for HuggingFace
+YT - Mean Gene Hacks - https://www.youtube.com/@MeanGeneHacks
+(C) Gene Ruebsamen - 2/7/2023
+
+License: GPL3
+"""
+
 import gradio as gr
 import codecs
 from ast import literal_eval
