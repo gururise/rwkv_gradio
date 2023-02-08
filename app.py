@@ -111,7 +111,6 @@ def chat(
         max_new_tokens=10,
         temperature=0.1,
         top_p=1.0,
-        stop="<|endoftext|>",
         seed=42,
 ):
     global model
@@ -148,7 +147,7 @@ FRITZ: I am an RNN based Large Language Model (LLM) that use no attention layers
     max_new_tokens = int(max_new_tokens)
     temperature = float(temperature)
     top_p = float(top_p)
-    stop =  [x.strip(' ') for x in stop.split(',')]
+    #stop =  [x.strip(' ') for x in stop.split(',')]
     seed = seed
 
     assert 1 <= max_new_tokens <= 384
@@ -165,16 +164,17 @@ FRITZ: I am an RNN based Large Language Model (LLM) that use no attention layers
 
     model.loadContext(newctx=intro+prompt)
 
-    generated_text = model.forward(number=max_new_tokens, stopStrings=stop,temp=temperature,top_p_usual=top_p)["output"]
+    generated_text = model.forward(number=max_new_tokens, stopStrings=["<|endoftext|>","USER:"],temp=temperature,top_p_usual=top_p)["output"]
 
     generated_text = generated_text.lstrip("\n ")
+    generated_text = generated_text.rstrip("USER:")
     print(f"{generated_text}")
-    
+    '''
     for stop_word in stop:
         stop_word = codecs.getdecoder("unicode_escape")(stop_word)[0]
         if stop_word != '' and stop_word in generated_text:
             generated_text = generated_text[:generated_text.find(stop_word)]
-    
+    '''
     gc.collect()
     history.append((prompt, generated_text))
     return history,history
@@ -230,7 +230,7 @@ iface = gr.Interface(
         gr.Slider(0.0, 1.0, value=0.85),  # top_p
         gr.Textbox(lines=1, value="<|endoftext|>") # stop
     ],
-    outputs=gr.Textbox(lines=25),
+    outputs=gr.Textbox(label="Generated Output", lines=25),
     examples=examples,
     cache_examples=False,
 ).queue()
@@ -246,10 +246,9 @@ chatiface = gr.Interface(
         "state",
         gr.Slider(1, 256, value=60),  # max_tokens
         gr.Slider(0.0, 1.0, value=0.8),  # temperature
-        gr.Slider(0.0, 1.0, value=0.85),  # top_p
-        gr.Textbox(lines=1, value="USER:,<|endoftext|>") # stop
+        gr.Slider(0.0, 1.0, value=0.85)  # top_p
     ],
-    outputs=[gr.Chatbot(color_map=("green", "pink")),"state"],
+    outputs=[gr.Chatbot(label="Chat Log", color_map=("green", "pink")),"state"],
 ).queue()
 
 demo = gr.TabbedInterface(
