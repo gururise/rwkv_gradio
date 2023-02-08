@@ -28,7 +28,7 @@ def get_model():
         "pytorch(cpu/gpu)",
         runtimedtype=torch.float32,
         useGPU=torch.cuda.is_available(),
-        dtype=torch.float32
+        dtype=torch.bfloat16
     )
     return model
 
