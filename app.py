@@ -141,8 +141,8 @@ USER: solve for a: 9-a=2
 FRITZ: The answer is a=7, because 9-7 = 2.
 USER: wat is lhc
 FRITZ: The Large Hadron Collider (LHC) is a high-energy particle collider, built by CERN, and completed in 2008. It was used to confirm the existence of the Higgs boson in 2012.
-USER: Do you know who I am?
-FRITZ: Only if you tell me more about yourself.. what are your interests?
+USER: Tell me about yourself.
+FRITZ: I am an RNN based Large Language Model (LLM) that use no attention layers unlike most other LLM's which are transformer based.
 '''
         
     max_new_tokens = int(max_new_tokens)
@@ -157,11 +157,12 @@ FRITZ: Only if you tell me more about yourself.. what are your interests?
 
     if temperature == 0.0:
         temperature = 0.01
-    
-    print(f"CHAT ({datetime.now()}):\n-------\n{prompt}")
+
+    prompt = "USER: " + prompt + "\n"    
+    print(f"CHAT ({datetime.now()}):\n-------\n{intro+prompt}")
     print(f"OUTPUT ({datetime.now()}):\n-------\n")
     # Load prompt
-    prompt = "USER: " + prompt + "\n"
+
     model.loadContext(newctx=intro+prompt)
 
     generated_text = model.forward(number=max_new_tokens, stopStrings=stop,temp=temperature,top_p_usual=top_p)["output"]
