@@ -17,9 +17,13 @@ import gc
 
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 
+desc = '''<p>RNN with Transformer-level LLM Performance (<a href='https://github.com/BlinkDL/RWKV-LM'>github</a>).
+    According to the author: "It combines the best of RNN and transformers - great performance, fast inference, saves VRAM, fast training, "infinite" ctx_len, and free sentence embedding."'''
+
+thanks = '''<p>Thanks to <a href='https://www.rftcapital.com'>RFT Capital</a> for donating compute capability for our experiments. Additional thanks to the author of the <a href="https://github.com/harrisonvanderbyl/rwkvstic">rwkvstic</a> library.</p>'''
+
 def to_md(text):
     return text.replace("\n", "<br />")
-
 
 def get_model():
     model = None
@@ -124,6 +128,9 @@ def chat(
             torch.cuda.empty_cache()
         model = get_model()
 
+    username = username.strip()
+    username = username or "USER"
+    
     intro = f'''The following is a verbose and detailed conversation between an AI assistant called FRITZ, and a human user called USER. FRITZ is intelligent, knowledgeable, wise and polite.
 
     {username}: What year was the french revolution?
@@ -219,9 +226,7 @@ Best Full Response:
 
 iface = gr.Interface(
     fn=infer,
-    description='''<p>RNN With Transformer-level LLM Performance. (<a href='https://github.com/BlinkDL/RWKV-LM'>github</a>)
-    According to the author: "It combines the best of RNN and transformers - great performance, fast inference, saves VRAM, fast training, "infinite" ctx_len, and free sentence embedding"
-    <p>Thanks to <a href='https://www.rftcapital.com'>RFT Capital</a> for donating compute capability for our experiments. Additional thanks to the author of the <a href="https://github.com/harrisonvanderbyl/rwkvstic">rwkvstic</a> library.</p>''',
+    description=f'''<h3>Generative and Question/Answer</h3>{desc}{thanks}''',
     allow_flagging="never",
     inputs=[
         gr.Textbox(lines=20, label="Prompt"),  # prompt
@@ -238,9 +243,7 @@ iface = gr.Interface(
 
 chatiface = gr.Interface(
     fn=chat,
-    description='''<p>RNN With Transformer-level LLM Performance. (<a href='https://github.com/BlinkDL/RWKV-LM'>github</a>)
-    According to the author: "It combines the best of RNN and transformers - great performance, fast inference, saves VRAM, fast training, "infinite" ctx_len, and free sentence embedding"
-    <p>Thanks to <a href='https://www.rftcapital.com'>RFT Capital</a> for donating compute capability for our experiments. Additional thanks to the author of the <a href="https://github.com/harrisonvanderbyl/rwkvstic">rwkvstic</a> library.</p>''',
+    description=f'''<h3>Chatbot</h3><h4>Refresh page or change name to reset memory context</h4>{desc}{thanks}''',
     allow_flagging="never",
     inputs=[
         gr.Textbox(lines=5, label="Message"),  # prompt
