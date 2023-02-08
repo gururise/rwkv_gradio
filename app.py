@@ -127,6 +127,7 @@ def chat(
     if len(history) == 0:
         # no history, so lets reset chat state
         model.resetState()
+        history = [[],model.emptyState]
         print("reset chat state")
         intro = '''The following is a verbose and detailed conversation between an AI assistant called FRITZ, and a human user called USER. FRITZ is intelligent, knowledgeable, wise and polite.
 
@@ -141,8 +142,10 @@ FRITZ: The answer is a=7, because 9-7 = 2.
 USER: wat is lhc
 FRITZ: The Large Hadron Collider (LHC) is a high-energy particle collider, built by CERN, and completed in 2008. It was used to confirm the existence of the Higgs boson in 2012.
 USER: Tell me about yourself.
-FRITZ: I am an RNN based Large Language Model (LLM) that use no attention layers unlike most other LLM's which are transformer based.
+FRITZ: My name is Fritz. I am an RNN based Large Language Model (LLM) that use no attention layers unlike most other LLM's which are transformer based.
 '''
+    else:
+        model.setState(history[1])
         
     max_new_tokens = int(max_new_tokens)
     temperature = float(temperature)
@@ -164,20 +167,15 @@ FRITZ: I am an RNN based Large Language Model (LLM) that use no attention layers
 
     model.loadContext(newctx=intro+prompt)
 
-    generated_text = model.forward(number=max_new_tokens, stopStrings=["<|endoftext|>","USER:"],temp=temperature,top_p_usual=top_p)["output"]
+    out = model.forward(number=max_new_tokens, stopStrings=["<|endoftext|>","USER:"],temp=temperature,top_p_usual=top_p)
 
-    generated_text = generated_text.lstrip("\n ")
+    generated_text = out["output"].lstrip("\n ")
     generated_text = generated_text.rstrip("USER:")
     print(f"{generated_text}")
-    '''
-    for stop_word in stop:
-        stop_word = codecs.getdecoder("unicode_escape")(stop_word)[0]
-        if stop_word != '' and stop_word in generated_text:
-            generated_text = generated_text[:generated_text.find(stop_word)]
-    '''
+
     gc.collect()
-    history.append((prompt, generated_text))
-    return history,history
+    history[0].append((prompt, generated_text))
+    return history[0],[history[0],out["state"]]
 
 
 examples = [
