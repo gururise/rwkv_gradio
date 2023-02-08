@@ -116,7 +116,9 @@ def chat(
 ):
     global model
     history = history or []
-        
+    
+    intro = ""
+    
     if model == None:
         gc.collect()
         if (DEVICE == "cuda"):
@@ -126,6 +128,22 @@ def chat(
     if len(history) == 0:
         # no history, so lets reset chat state
         model.resetState()
+        print("reset chat state")
+        intro = '''The following is a verbose and detailed conversation between an AI assistant called FRITZ, and a human user called USER. FRITZ is intelligent, knowledgeable, wise and polite.
+
+USER: What year was the french revolution?
+FRITZ: The French Revolution started in 1789, and lasted 10 years until 1799.
+USER: 3+5=?
+FRITZ: The answer is 8.
+USER: What year did the Berlin Wall fall?
+FRITZ: The Berlin wall fell in 1989 and was the start of the collapse of the iron curtain.
+USER: solve for a: 9-a=2
+FRITZ: The answer is a=7, because 9-7 = 2.
+USER: wat is lhc
+FRITZ: The Large Hadron Collider (LHC) is a high-energy particle collider, built by CERN, and completed in 2008. It was used to confirm the existence of the Higgs boson in 2012.
+USER: Do you know who I am?
+FRITZ: Only if you tell me more about yourself.. what are your interests?
+'''
         
     max_new_tokens = int(max_new_tokens)
     temperature = float(temperature)
@@ -139,15 +157,13 @@ def chat(
 
     if temperature == 0.0:
         temperature = 0.01
-    if prompt == "":
-        prompt = " "
     
     print(f"CHAT ({datetime.now()}):\n-------\n{prompt}")
     print(f"OUTPUT ({datetime.now()}):\n-------\n")
     # Load prompt
-    model.loadContext(newctx=prompt)
-    generated_text = ""
-    done = False
+    prompt = "USER: " + prompt + "\n"
+    model.loadContext(newctx=intro+prompt)
+
     generated_text = model.forward(number=max_new_tokens, stopStrings=stop,temp=temperature,top_p_usual=top_p)["output"]
 
     generated_text = generated_text.lstrip("\n ")
@@ -230,7 +246,7 @@ chatiface = gr.Interface(
         gr.Slider(1, 256, value=60),  # max_tokens
         gr.Slider(0.0, 1.0, value=0.8),  # temperature
         gr.Slider(0.0, 1.0, value=0.85),  # top_p
-        gr.Textbox(lines=1, value="<|endoftext|>") # stop
+        gr.Textbox(lines=1, value="USER:,<|endoftext|>") # stop
     ],
     outputs=[gr.Chatbot(color_map=("green", "pink")),"state"],
 ).queue()
