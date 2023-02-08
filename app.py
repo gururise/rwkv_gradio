@@ -61,8 +61,7 @@ def infer(
     assert 0.0 <= temperature <= 1.0
     assert 0.0 <= top_p <= 1.0
 
-    if temperature == 0.0:
-        temperature = 0.05
+    temperature = max(0.05,temperature)
     if prompt == "":
         prompt = " "
 
@@ -165,8 +164,7 @@ def chat(
     assert 0.0 <= temperature <= 1.0
     assert 0.0 <= top_p <= 1.0
 
-    if temperature == 0.0:
-        temperature = 0.05
+    temperature = max(0.05,temperature)
 
     prompt = f"{username}: " + prompt + "\n"    
     print(f"CHAT ({datetime.now()}):\n-------\n{prompt}")
@@ -211,11 +209,11 @@ Alex:''', "generative", 220, 0.9, 0.9, "\\n\\n,<|endoftext|>"],
 Please Write a Short story about a cat learning python
 
 Best Full Response:
-''', "generative", 80, 0.2, 1.0, "\\n\\n,<|endoftext|>"],
+''', "generative", 180, 0.85, 0.8, "\\n\\n,<|endoftext|>"],
     [
         # Natural Language Interface
         '''Here is a short story (in the style of Tolkien) in which Aiden attacks a robot with a sword:
-        ''',"generative", 200, 0.85, 0.8, "<|endoftext|>"]
+        ''',"generative", 180, 0.85, 0.8, "<|endoftext|>"]
 ]
 
 
