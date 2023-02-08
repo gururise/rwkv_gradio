@@ -69,7 +69,7 @@ def infer(
     # Clear model state for generative mode
     model.resetState()
     if (mode == "Q/A"):
-        prompt = f"Expert Questions & Helpful Answers\nAsk Research Experts\nQuestion:\n{prompt}\n\nFull Answer:"
+        prompt = f"Q & A\n\nQuestion:\n{prompt}\n\nDetailed Expert Answer:\n"
     
     print(f"PROMPT ({datetime.now()}):\n-------\n{prompt}")
     print(f"OUTPUT ({datetime.now()}):\n-------\n")
@@ -206,22 +206,16 @@ Fritz: Morning Alex, I am an RNN with transformer level performance. My language
 Alex:''', "generative", 220, 0.9, 0.9, "\\n\\n,<|endoftext|>"],
     [
         # Generate List
-        '''Q. Give me list of fiction books. 
-1. Harry Potter
-2. Lord of the Rings
-3. Game of Thrones
+        '''Task given:
 
-Q. Give me a list of vegetables.
-1. Broccoli
-2. Celery
-3. Tomatoes
+Please Write a Short story about a cat learning python
 
-Q. Give me a list of car manufacturers.''', "generative", 80, 0.2, 1.0, "\\n\\n,<|endoftext|>"],
+Best Full Response:
+''', "generative", 80, 0.2, 1.0, "\\n\\n,<|endoftext|>"],
     [
         # Natural Language Interface
-        '''You are the writing assistant for Stephen King. You have worked in the fiction/horror genre for 30 years. You are a Pulitzer Prize-winning author, and now you are tasked with developing a skeletal outline for his newest horror novel, set to be completed in the spring of 2024. Create a summary of this work.
-
-Summary:''',"generative", 200, 0.85, 0.8, "<|endoftext|>"]
+        '''Here is a short story (in the style of Tolkien) in which Aiden attacks a robot with a sword:
+        ''',"generative", 200, 0.85, 0.8, "<|endoftext|>"]
 ]
 
 
