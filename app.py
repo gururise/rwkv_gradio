@@ -68,7 +68,7 @@ def infer(
     # Clear model state for generative mode
     model.resetState()
     if (mode == "Q/A"):
-        prompt = f"Q & A\n\nQuestion:\n{prompt}\n\nDetailed Expert Answer:\n"
+        prompt = f"Ask Expert\n\nQuestion:\n{prompt}\n\nExpert Full Answer:\n"
     
     print(f"PROMPT ({datetime.now()}):\n-------\n{prompt}")
     print(f"OUTPUT ({datetime.now()}):\n-------\n")
@@ -209,11 +209,11 @@ Alex:''', "generative", 220, 0.9, 0.9, "\\n\\n,<|endoftext|>"],
 Please Write a Short story about a cat learning python
 
 Best Full Response:
-''', "generative", 180, 0.85, 0.8, "<|endoftext|>"],
+''', "generative", 140, 0.85, 0.8, "<|endoftext|>"],
     [
         # Natural Language Interface
         '''Here is a short story (in the style of Tolkien) in which Aiden attacks a robot with a sword:
-        ''',"generative", 180, 0.85, 0.8, "<|endoftext|>"]
+        ''',"generative", 140, 0.85, 0.8, "<|endoftext|>"]
 ]
 
 
