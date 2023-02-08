@@ -209,7 +209,7 @@ Alex:''', "generative", 220, 0.9, 0.9, "\\n\\n,<|endoftext|>"],
 Please Write a Short story about a cat learning python
 
 Best Full Response:
-''', "generative", 180, 0.85, 0.8, "\\n\\n,<|endoftext|>"],
+''', "generative", 180, 0.85, 0.8, "<|endoftext|>"],
     [
         # Natural Language Interface
         '''Here is a short story (in the style of Tolkien) in which Aiden attacks a robot with a sword:
