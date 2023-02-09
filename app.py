@@ -22,7 +22,7 @@ import codecs
 from ast import literal_eval
 from datetime import datetime
 from rwkvstic.load import RWKV
-from rwkvstic.agnostic.backends import TORCH, TORCH_QUANT, TORCH_STREAM
+from config import config, title
 import torch
 import gc
 
@@ -33,25 +33,25 @@ desc = '''<p>RNN with Transformer-level LLM Performance (<a href='https://github
 
 thanks = '''<p>Thanks to <a href='https://www.rftcapital.com'>RFT Capital</a> for donating compute capability for our experiments. Additional thanks to the author of the <a href="https://github.com/harrisonvanderbyl/rwkvstic">rwkvstic</a> library.</p>'''
 
+
 def to_md(text):
     return text.replace("\n", "<br />")
+
 
 def get_model():
     model = None
     model = RWKV(
-        "https://huggingface.co/BlinkDL/rwkv-4-pile-1b5/resolve/main/RWKV-4-Pile-1B5-Instruct-test1-20230124.pth",
-        "pytorch(cpu/gpu)",
-        runtimedtype=torch.float32,
-        useGPU=torch.cuda.is_available(),
-        dtype=torch.float32
+        **config
     )
     return model
 
+
 model = None
+
 
 def infer(
         prompt,
-        mode = "generative",
+        mode="generative",
         max_new_tokens=10,
         temperature=0.1,
         top_p=1.0,
@@ -65,18 +65,18 @@ def infer(
         if (DEVICE == "cuda"):
             torch.cuda.empty_cache()
         model = get_model()
-        
+
     max_new_tokens = int(max_new_tokens)
     temperature = float(temperature)
     top_p = float(top_p)
-    stop =  [x.strip(' ') for x in stop.split(',')]
+    stop = [x.strip(' ') for x in stop.split(',')]
     seed = seed
 
     assert 1 <= max_new_tokens <= 384
     assert 0.0 <= temperature <= 1.0
     assert 0.0 <= top_p <= 1.0
 
-    temperature = max(0.05,temperature)
+    temperature = max(0.05, temperature)
     if prompt == "":
         prompt = " "
 
@@ -84,7 +84,7 @@ def infer(
     model.resetState()
     if (mode == "Q/A"):
         prompt = f"Ask Expert\n\nQuestion:\n{prompt}\n\nExpert Full Answer:\n"
-    
+
     print(f"PROMPT ({datetime.now()}):\n-------\n{prompt}")
     print(f"OUTPUT ({datetime.now()}):\n-------\n")
     # Load prompt
@@ -93,11 +93,12 @@ def infer(
     done = False
     with torch.no_grad():
         for _ in range(max_new_tokens):
-            char = model.forward(stopStrings=stop,temp=temperature,top_p_usual=top_p)["output"]
+            char = model.forward(stopStrings=stop, temp=temperature, top_p_usual=top_p)[
+                "output"]
             print(char, end='', flush=True)
             generated_text += char
             generated_text = generated_text.lstrip("\n ")
-            
+
             for stop_word in stop:
                 stop_word = codecs.getdecoder("unicode_escape")(stop_word)[0]
                 if stop_word != '' and stop_word in generated_text:
@@ -108,13 +109,13 @@ def infer(
                 print("<stopped>\n")
                 break
 
-    #print(f"{generated_text}")
-    
+    # print(f"{generated_text}")
+
     for stop_word in stop:
         stop_word = codecs.getdecoder("unicode_escape")(stop_word)[0]
         if stop_word != '' and stop_word in generated_text:
             generated_text = generated_text[:generated_text.find(stop_word)]
-    
+
     gc.collect()
     yield generated_text
 
@@ -130,9 +131,9 @@ def chat(
 ):
     global model
     history = history or []
-    
+
     intro = ""
-    
+
     if model == None:
         gc.collect()
         if (DEVICE == "cuda"):
@@ -141,7 +142,7 @@ def chat(
 
     username = username.strip()
     username = username or "USER"
-    
+
     intro = f'''The following is a verbose and detailed conversation between an AI assistant called FRITZ, and a human user called USER. FRITZ is intelligent, knowledgeable, wise and polite.
 
     {username}: What year was the french revolution?
@@ -156,23 +157,22 @@ def chat(
     FRITZ: The Large Hadron Collider (LHC) is a high-energy particle collider, built by CERN, and completed in 2008. It was used to confirm the existence of the Higgs boson in 2012.
     {username}: Tell me about yourself.
     FRITZ: My name is Fritz. I am an RNN based Large Language Model (LLM).
-    '''    
-     
+    '''
+
     if len(history) == 0:
         # no history, so lets reset chat state
         model.resetState()
-        history = [[],model.emptyState]
+        history = [[], model.emptyState]
         print("reset chat state")
     else:
         if (history[0][0][0].split(':')[0] != username):
             model.resetState()
-            history = [[],model.emptyState]
+            history = [[], model.emptyState]
             print("username changed, reset state")
         else:
             model.setState(history[1])
             intro = ""
-        
-        
+
     max_new_tokens = int(max_new_tokens)
     temperature = float(temperature)
     top_p = float(top_p)
@@ -182,16 +182,17 @@ def chat(
     assert 0.0 <= temperature <= 1.0
     assert 0.0 <= top_p <= 1.0
 
-    temperature = max(0.05,temperature)
+    temperature = max(0.05, temperature)
 
-    prompt = f"{username}: " + prompt + "\n"    
+    prompt = f"{username}: " + prompt + "\n"
     print(f"CHAT ({datetime.now()}):\n-------\n{prompt}")
     print(f"OUTPUT ({datetime.now()}):\n-------\n")
     # Load prompt
 
     model.loadContext(newctx=intro+prompt)
 
-    out = model.forward(number=max_new_tokens, stopStrings=["<|endoftext|>",username+":"],temp=temperature,top_p_usual=top_p)
+    out = model.forward(number=max_new_tokens, stopStrings=[
+                        "<|endoftext|>", username+":"], temp=temperature, top_p_usual=top_p)
 
     generated_text = out["output"].lstrip("\n ")
     generated_text = generated_text.rstrip("USER:")
@@ -199,19 +200,19 @@ def chat(
 
     gc.collect()
     history[0].append((prompt, generated_text))
-    return history[0],[history[0],out["state"]]
+    return history[0], [history[0], out["state"]]
 
 
 examples = [
     [
         # Question Answering
-        '''What is the capital of Germany?''',"Q/A", 25, 0.2, 1.0, "<|endoftext|>"],
+        '''What is the capital of Germany?''', "Q/A", 25, 0.2, 1.0, "<|endoftext|>"],
     [
         # Question Answering
-        '''Are humans good or bad?''',"Q/A", 150, 0.8, 0.8, "<|endoftext|>"],
+        '''Are humans good or bad?''', "Q/A", 150, 0.8, 0.8, "<|endoftext|>"],
     [
         # Question Answering
-        '''What is the purpose of Vitamin A?''',"Q/A", 50, 0.2, 0.8, "<|endoftext|>"],
+        '''What is the purpose of Vitamin A?''', "Q/A", 50, 0.2, 0.8, "<|endoftext|>"],
     [
         # Chatbot
         '''This is a conversation between two AI large language models named Alex and Fritz. They are exploring each other's capabilities, and trying to ask interesting questions of one another to explore the limits of each others AI.
@@ -231,7 +232,7 @@ Best Full Response:
     [
         # Natural Language Interface
         '''Here is a short story (in the style of Tolkien) in which Aiden attacks a robot with a sword:
-        ''',"generative", 140, 0.85, 0.8, "<|endoftext|>"]
+        ''', "generative", 140, 0.85, 0.8, "<|endoftext|>"]
 ]
 
 
@@ -241,11 +242,12 @@ iface = gr.Interface(
     allow_flagging="never",
     inputs=[
         gr.Textbox(lines=20, label="Prompt"),  # prompt
-        gr.Radio(["generative","Q/A"], value="generative", label="Choose Mode"),
+        gr.Radio(["generative", "Q/A"],
+                 value="generative", label="Choose Mode"),
         gr.Slider(1, 256, value=40),  # max_tokens
         gr.Slider(0.0, 1.0, value=0.8),  # temperature
         gr.Slider(0.0, 1.0, value=0.85),  # top_p
-        gr.Textbox(lines=1, value="<|endoftext|>") # stop
+        gr.Textbox(lines=1, value="<|endoftext|>")  # stop
     ],
     outputs=gr.Textbox(label="Generated Output", lines=25),
     examples=examples,
@@ -259,20 +261,22 @@ chatiface = gr.Interface(
     inputs=[
         gr.Textbox(lines=5, label="Message"),  # prompt
         "state",
-        gr.Text(lines=1, value="USER", label="Your Name", placeholder="Enter your Name"),
+        gr.Text(lines=1, value="USER", label="Your Name",
+                placeholder="Enter your Name"),
         gr.Slider(1, 256, value=60),  # max_tokens
         gr.Slider(0.0, 1.0, value=0.8),  # temperature
         gr.Slider(0.0, 1.0, value=0.85)  # top_p
     ],
-    outputs=[gr.Chatbot(label="Chat Log", color_map=("green", "pink")),"state"],
+    outputs=[gr.Chatbot(label="Chat Log", color_map=(
+        "green", "pink")), "state"],
 ).queue()
 
 demo = gr.TabbedInterface(
 
-    [iface,chatiface],["Generative","Chatbot"],
-    title="RWKV-4 (1.5b Instruct)",
-    
-    )
+    [iface, chatiface], ["Generative", "Chatbot"],
+    title=title,
+
+)
 
 demo.queue()
 demo.launch(share=False)
