@@ -55,6 +55,7 @@ def infer(
         max_new_tokens=10,
         temperature=0.1,
         top_p=1.0,
+        end_adj=0.0,
         stop="<|endoftext|>",
         seed=42,
 ):
@@ -75,6 +76,7 @@ def infer(
     assert 1 <= max_new_tokens <= 384
     assert 0.0 <= temperature <= 1.0
     assert 0.0 <= top_p <= 1.0
+    assert -999 <= end_adj <= 0.0
 
     temperature = max(0.05, temperature)
     if prompt == "":
@@ -93,7 +95,7 @@ def infer(
     done = False
     with torch.no_grad():
         for _ in range(max_new_tokens):
-            char = model.forward(stopStrings=stop, temp=temperature, top_p_usual=top_p)[
+            char = model.forward(stopStrings=stop, temp=temperature, top_p_usual=top_p, end_adj=end_adj)[
                 "output"]
             print(char, end='', flush=True)
             generated_text += char
@@ -127,6 +129,7 @@ def chat(
         max_new_tokens=10,
         temperature=0.1,
         top_p=1.0,
+        end_adj=0.0,
         seed=42,
 ):
     global model
@@ -181,6 +184,7 @@ def chat(
     assert 1 <= max_new_tokens <= 384
     assert 0.0 <= temperature <= 1.0
     assert 0.0 <= top_p <= 1.0
+    assert -999 <= end_adj <= 0.0
 
     temperature = max(0.05, temperature)
 
@@ -192,7 +196,7 @@ def chat(
     model.loadContext(newctx=intro+prompt)
 
     out = model.forward(number=max_new_tokens, stopStrings=[
-                        "<|endoftext|>", username+":"], temp=temperature, top_p_usual=top_p)
+                        "<|endoftext|>", username+":"], temp=temperature, top_p_usual=top_p, end_adj=end_adj)
 
     generated_text = out["output"].lstrip("\n ")
     generated_text = generated_text.rstrip("USER:")
@@ -206,13 +210,13 @@ def chat(
 examples = [
     [
         # Question Answering
-        '''What is the capital of Germany?''', "Q/A", 25, 0.2, 1.0, "<|endoftext|>"],
+        '''What is the capital of Germany?''', "Q/A", 25, 0.2, 1.0, 0.0, "<|endoftext|>"],
     [
         # Question Answering
-        '''Are humans good or bad?''', "Q/A", 150, 0.8, 0.8, "<|endoftext|>"],
+        '''Are humans good or bad?''', "Q/A", 150, 0.8, 0.8, -1.5, "<|endoftext|>"],
     [
         # Question Answering
-        '''What is the purpose of Vitamin A?''', "Q/A", 50, 0.2, 0.8, "<|endoftext|>"],
+        '''What is the purpose of Vitamin A?''', "Q/A", 60, 0.2, 0.8, -1.0, "<|endoftext|>"],
     [
         # Chatbot
         '''This is a conversation between two AI large language models named Alex and Fritz. They are exploring each other's capabilities, and trying to ask interesting questions of one another to explore the limits of each others AI.
@@ -220,7 +224,7 @@ examples = [
 Conversation:
 Alex: Good morning, Fritz, what type of LLM are you based upon?
 Fritz: Morning Alex, I am an RNN with transformer level performance. My language model is 100% attention free.
-Alex:''', "generative", 220, 0.9, 0.9, "\\n\\n,<|endoftext|>"],
+Alex:''', "generative", 220, 0.9, 0.9, -4.0, "<|endoftext|>,\\n\\n"],
     [
         # Generate List
         '''Task given:
@@ -228,11 +232,11 @@ Alex:''', "generative", 220, 0.9, 0.9, "\\n\\n,<|endoftext|>"],
 Please Write a Short story about a cat learning python
 
 Best Full Response:
-''', "generative", 140, 0.85, 0.8, "<|endoftext|>"],
+''', "generative", 140, 0.85, 0.8, -5.0, "<|endoftext|>"],
     [
         # Natural Language Interface
         '''Here is a short story (in the style of Tolkien) in which Aiden attacks a robot with a sword:
-        ''', "generative", 140, 0.85, 0.8, "<|endoftext|>"]
+        ''', "generative", 140, 0.85, 0.8, -5.0, "<|endoftext|>"]
 ]
 
 
@@ -247,6 +251,7 @@ iface = gr.Interface(
         gr.Slider(1, 256, value=40),  # max_tokens
         gr.Slider(0.0, 1.0, value=0.8),  # temperature
         gr.Slider(0.0, 1.0, value=0.85),  # top_p
+        gr.Slider(-99, 0.0, value=0.0, step=0.5, label="Reduce End of Text (Stop) Probability"), # end_adj
         gr.Textbox(lines=1, value="<|endoftext|>")  # stop
     ],
     outputs=gr.Textbox(label="Generated Output", lines=25),
@@ -265,7 +270,8 @@ chatiface = gr.Interface(
                 placeholder="Enter your Name"),
         gr.Slider(1, 256, value=60),  # max_tokens
         gr.Slider(0.0, 1.0, value=0.8),  # temperature
-        gr.Slider(0.0, 1.0, value=0.85)  # top_p
+        gr.Slider(0.0, 1.0, value=0.85),  # top_p
+        gr.Slider(-99, 0.0, value=-2, step=0.5, label="Reduce End of Text (Stop) Probability"), # end_adj
     ],
     outputs=[gr.Chatbot(label="Chat Log", color_map=(
         "green", "pink")), "state"],
