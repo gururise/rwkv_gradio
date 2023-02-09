@@ -251,7 +251,7 @@ iface = gr.Interface(
         gr.Slider(1, 256, value=40),  # max_tokens
         gr.Slider(0.0, 1.0, value=0.8),  # temperature
         gr.Slider(0.0, 1.0, value=0.85),  # top_p
-        gr.Slider(-99, 0.0, value=0.0, step=0.5, label="Reduce End of Text (Stop) Probability"), # end_adj
+        gr.Slider(-99, 0.0, value=0.0, step=0.5, label="Reduce End of Text Probability"), # end_adj
         gr.Textbox(lines=1, value="<|endoftext|>")  # stop
     ],
     outputs=gr.Textbox(label="Generated Output", lines=25),
@@ -271,7 +271,7 @@ chatiface = gr.Interface(
         gr.Slider(1, 256, value=60),  # max_tokens
         gr.Slider(0.0, 1.0, value=0.8),  # temperature
         gr.Slider(0.0, 1.0, value=0.85),  # top_p
-        gr.Slider(-99, 0.0, value=-2, step=0.5, label="Reduce End of Text (Stop) Probability"), # end_adj
+        gr.Slider(-99, 0.0, value=-2, step=0.5, label="Reduce End of Text Probability"), # end_adj
     ],
     outputs=[gr.Chatbot(label="Chat Log", color_map=(
         "green", "pink")), "state"],
