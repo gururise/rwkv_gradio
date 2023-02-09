@@ -199,7 +199,7 @@ def chat(
                         "<|endoftext|>", username+":"], temp=temperature, top_p_usual=top_p, end_adj=end_adj)
 
     generated_text = out["output"].lstrip("\n ")
-    generated_text = generated_text.rstrip("USER:")
+    generated_text = generated_text.rstrip(username + ":")
     print(f"{generated_text}")
 
     gc.collect()
