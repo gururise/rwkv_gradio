@@ -210,13 +210,13 @@ def chat(
 examples = [
     [
         # Question Answering
-        '''What is the capital of Germany?''', "Q/A", 25, 0.2, 1.0, 0.0, "<|endoftext|>"],
+        '''What is the capital of Germany?''', "Q/A", 25, 0.2, 0.8, 0.0, "<|endoftext|>,\\n"],
     [
         # Question Answering
-        '''Are humans good or bad?''', "Q/A", 150, 0.8, 0.8, -1.5, "<|endoftext|>"],
+        '''Are humans good or bad?''', "Q/A", 150, 0.8, 0.8, -1.0, "<|endoftext|>"],
     [
         # Question Answering
-        '''What is the purpose of Vitamin A?''', "Q/A", 60, 0.2, 0.8, -1.0, "<|endoftext|>"],
+        '''What is the purpose of Vitamin A?''', "Q/A", 60, 0.2, 0.8, -0.5, "<|endoftext|>"],
     [
         # Chatbot
         '''This is a conversation between two AI large language models named Alex and Fritz. They are exploring each other's capabilities, and trying to ask interesting questions of one another to explore the limits of each others AI.
@@ -224,7 +224,7 @@ examples = [
 Conversation:
 Alex: Good morning, Fritz, what type of LLM are you based upon?
 Fritz: Morning Alex, I am an RNN with transformer level performance. My language model is 100% attention free.
-Alex:''', "generative", 220, 0.9, 0.9, -4.0, "<|endoftext|>,\\n\\n"],
+Alex:''', "generative", 220, 0.9, 0.9, -3.0, "<|endoftext|>,\\n\\n"],
     [
         # Generate List
         '''Task given:
@@ -232,11 +232,11 @@ Alex:''', "generative", 220, 0.9, 0.9, -4.0, "<|endoftext|>,\\n\\n"],
 Please Write a Short story about a cat learning python
 
 Best Full Response:
-''', "generative", 140, 0.85, 0.8, -5.0, "<|endoftext|>"],
+''', "generative", 140, 0.85, 0.8, -3.5, "<|endoftext|>"],
     [
         # Natural Language Interface
         '''Here is a short story (in the style of Tolkien) in which Aiden attacks a robot with a sword:
-        ''', "generative", 140, 0.85, 0.8, -5.0, "<|endoftext|>"]
+        ''', "generative", 140, 0.85, 0.8, -3.5, "<|endoftext|>"]
 ]
 
 
