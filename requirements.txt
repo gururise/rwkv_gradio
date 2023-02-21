@@ -2,5 +2,5 @@ transformers
 scipy
 torch
 inquirer
-rwkvstic
+rwkvstic>=0.3.4
 gradio>=3.17.1

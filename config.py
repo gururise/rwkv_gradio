@@ -1,4 +1,4 @@
-from rwkvstic.agnostic.backends import TORCH, TORCH_QUANT
+from rwkvstic.agnostic.backends import TORCH, TORCH_QUANT, TORCH_STREAM
 import torch
 
 quantized = {
@@ -18,15 +18,15 @@ quantized = {
 # [File size: 3.0GB]
 
 
-config = {
-    "path": "https://huggingface.co/BlinkDL/rwkv-4-pile-1b5/resolve/main/RWKV-4-Pile-1B5-Instruct-test2-20230209.pth",
-    "mode": TORCH,
-    "runtimedtype": torch.float32,
-    "useGPU": torch.cuda.is_available(),
-    "dtype": torch.float32
-}
+# config = {
+#     "path": "https://huggingface.co/BlinkDL/rwkv-4-pile-1b5/resolve/main/RWKV-4-Pile-1B5-Instruct-test2-20230209.pth",
+#     "mode": TORCH,
+#     "runtimedtype": torch.float32,
+#     "useGPU": torch.cuda.is_available(),
+#     "dtype": torch.float32
+# }
 
-title = "RWKV-4 (1.5b Instruct Test 2)"
+# title = "RWKV-4 (1.5b Instruct Test 2)"
 
 # RWKV 1B5 instruct model quantized
 # Approximate
@@ -57,20 +57,36 @@ title = "RWKV-4 (1.5b Instruct Test 2)"
 # [File size: 28.0GB]
 
 # config = {
-#     "path": "https://huggingface.co/BlinkDL/rwkv-4-pile-14b/resolve/main/RWKV-4-Pile-14B-20230204-7324.pth",
+#     "path": "https://huggingface.co/BlinkDL/rwkv-4-pile-14b/resolve/main/RWKV-4-Pile-14B-20230213-8019.pth",
 #     **quantized
 # }
 
 # title = "RWKV-4 (14b Quantized)"
 
 
-# RWKV 14B pre-quantized (latest as of feb 9)
+# RWKV 14B pre-quantized (latest as of feb 13)
 # Approximate
 # [Vram usage: 15.0GB]
 # [File size: 14.4GB]
 
+config = {
+    "path": "https://huggingface.co/yahma/RWKV-14b_quant/resolve/main/RWKV-4-Pile-14B-20230213-8019.logfix.pqth"
+}
+
+title = "RWKV-4 (14b Pre-Quantized)"
+
+# RWKV 14B Stream (latest as of feb 13)
+# Approximate
+# [Vram usage: 15.0GB]
+# [File size: 28.0GB]
+
 # config = {
-#     "path": "https://huggingface.co/Hazzzardous/RWKV-8Bit/resolve/main/RWKV-4-Pile-14B-20230204-7324.pqth"
+#     "path": "https://huggingface.co/yahma/RWKV-14b_quant/resolve/main/RWKV-4-Pile-14B-20230213-8019.pth",
+#      "mode": TORCH_STREAM,
+#      "runtimedtype": torch.float32,
+#      "useGPU": torch.cuda.is_available(),
+#      "dtype": torch.bfloat16,
+#      "target": 15
 # }
 
-# title = "RWKV-4 (14b Quantized)"
+# title = "RWKV-4 (14b Feb 13 - Streaming)"
